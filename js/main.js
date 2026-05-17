@@ -1,53 +1,27 @@
-const menuItems = [
-  {
-    id: 1,
-    name: "Samosa",
-    category: "Snacks",
-    price: 30,
-    description: "Crispy golden triangle stuffed with spiced potatoes.",
-    image: "../img/8.avif"
-  },
-  {
-    id: 2,
-    name: "Pani Puri",
-    category: "Chaat",
-    price: 50,
-    description: "Hollow crispy puris filled with spicy, tangy water and chickpeas.",
-    image: "../img/2.avif"
-  },
-  {
-    id: 3,
-    name: "Masala Chai",
-    category: "Beverages",
-    price: 20,
-    description: "Aromatic tea brewed with spices and milk.",
-    image: "../img/7.avif"
-  },
-  {
-    id: 4,
-    name: "Kachori",
-    category: "Snacks",
-    price: 35,
-    description: "Deep-fried pastry filled with spicy lentils.",
-    image: "../img/9.avif"
-  },
-  {
-    id: 5,
-    name: "Bhel Puri",
-    category: "Chaat",
-    price: 45,
-    description: "Crunchy puffed rice mixed with tangy tamarind chutney.",
-    image: "../img/1.avif"
-  },
-];
+let menuItems = [];
+
+// ===== Fetch Menu Data =====
+async function loadMenuData() {
+  try {
+    const response = await fetch("data/menu.json");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    menuItems = await response.json();
+  } catch (error) {
+    console.error("Failed to load menu data:", error);
+    menuItems = [];
+  }
+}
+
 
 // ===== Globals =====
 const specialsContainer = document.getElementById("specials-cards");
-const menuContainer = document.getElementById("menu-cards");
+const menuContainer = document.getElementById("menu-cards") || document.getElementById("menu-container");
 const cartCount = document.getElementById("cart-count");
 const cartSidebar = document.getElementById("cart-sidebar");
 const cartItemsContainer = document.getElementById("cart-items");
-const cartTotal = document.getElementById("cart-total");
+const cartTotal = document.getElementById("cart-total") || document.getElementById("total-price");
 const checkoutBtn = document.getElementById("checkout-btn");
 
 let cart = [];
@@ -83,6 +57,7 @@ function createCard(item) {
 }
 
 function renderSpecials() {
+  if (!specialsContainer) return;
   // Pick top 3 items as specials
   const specials = menuItems.slice(0, 3);
   specialsContainer.innerHTML = "";
@@ -92,6 +67,7 @@ function renderSpecials() {
 }
 
 function renderMenu(filter = "All") {
+  if (!menuContainer) return;
   menuContainer.innerHTML = "";
   let filteredItems = menuItems;
   if (filter !== "All") {
@@ -103,11 +79,12 @@ function renderMenu(filter = "All") {
 }
 
 function renderCart() {
+  if (!cartItemsContainer) return;
   cartItemsContainer.innerHTML = "";
   if (cart.length === 0) {
     cartItemsContainer.innerHTML = `<p>Your cart is empty.</p>`;
-    checkoutBtn.disabled = true;
-    cartTotal.textContent = "Total: ₹0";
+    if (checkoutBtn) checkoutBtn.disabled = true;
+    if (cartTotal) cartTotal.textContent = "Total: ₹0";
     return;
   }
 
@@ -131,14 +108,38 @@ function renderCart() {
 
   // Update total
   const total = cart.reduce((sum, cartItem) => sum + cartItem.item.price * cartItem.quantity, 0);
-  cartTotal.textContent = `Total: ${formatPrice(total)}`;
-  checkoutBtn.disabled = false;
+  if (cartTotal) cartTotal.textContent = `Total: ${formatPrice(total)}`;
+  if (checkoutBtn) checkoutBtn.disabled = false;
 }
 
 function updateCartCount() {
-  const totalCount = cart.reduce((sum, cartItem) => sum + cartItem.quantity, 0);
-  cartCount.textContent = totalCount;
+  if (cartCount) {
+    const totalCount = cart.reduce((sum, cartItem) => sum + cartItem.quantity, 0);
+    cartCount.textContent = totalCount;
+  }
 }
+
+// ===== Global Window Handlers for Multi-page support =====
+
+window.filterCategory = function(category) {
+  renderMenu(category);
+  const buttons = document.querySelectorAll(".filter button");
+  buttons.forEach(btn => {
+    const filterText = btn.getAttribute("onclick") ? btn.getAttribute("onclick").match(/'([^']+)'/)[1] : "";
+    if (filterText === category || btn.textContent.trim() === category) {
+      btn.classList.add("active");
+    } else {
+      btn.classList.remove("active");
+    }
+  });
+};
+
+window.checkout = function() {
+  alert("Thank you for your order! Your delicious chaat is on the way.");
+  cart = [];
+  updateCartCount();
+  renderCart();
+};
 
 // ===== Cart Operations =====
 
@@ -189,6 +190,7 @@ function setupFilterButtons() {
 function setupCartToggle() {
   const cartOpenBtn = document.getElementById("cart-open-btn");
   const cartCloseBtn = document.getElementById("cart-close");
+  if (!cartOpenBtn || !cartCloseBtn || !cartSidebar) return;
 
   cartOpenBtn.addEventListener("click", (e) => {
     e.preventDefault();
@@ -213,6 +215,7 @@ function setupCartToggle() {
 function setupOrderNowScroll() {
   const orderNowBtn = document.getElementById("order-now-btn");
   const menuSection = document.getElementById("menu");
+  if (!orderNowBtn || !menuSection) return;
 
   orderNowBtn.addEventListener("click", () => {
     menuSection.scrollIntoView({ behavior: "smooth" });
@@ -222,6 +225,7 @@ function setupOrderNowScroll() {
 function setupSearch() {
   const searchInput = document.getElementById("search-input");
   const searchBtn = document.getElementById("search-btn");
+  if (!searchInput || !searchBtn) return;
 
   function searchMenu() {
     const query = searchInput.value.trim().toLowerCase();
@@ -230,7 +234,7 @@ function setupSearch() {
       renderMenu("All");
       return;
     }
-    const filtered = menuItems.filter(item => item.name.toLowerCase().includes(query) || item.description.toLowerCase().includes(query));
+    const filtered = menuItems.filter(item => item.name.toLowerCase().includes(query) || (item.description && item.description.toLowerCase().includes(query)));
     menuContainer.innerHTML = "";
     filtered.forEach(item => {
       menuContainer.appendChild(createCard(item));
@@ -248,6 +252,7 @@ function setupSearch() {
 function setupContactForm() {
   const form = document.getElementById("contact-form");
   const formSuccess = document.getElementById("form-success");
+  if (!form || !formSuccess) return;
 
   const nameInput    = form.querySelector("#name");
   const emailInput   = form.querySelector("#email");
@@ -312,6 +317,7 @@ function setupContactForm() {
 
 function setupNewsletterForm() {
   const newsletterForm = document.getElementById("newsletter-form");
+  if (!newsletterForm) return;
   const emailInput = newsletterForm.querySelector("#newsletter-email");
 
   newsletterForm.addEventListener("submit", (e) => {
@@ -331,7 +337,9 @@ function setupNewsletterForm() {
 
 // ===== Initialization =====
 
-function init() {
+async function init() {
+  await loadMenuData();
+
   renderSpecials();
   renderMenu("All");
   updateCartCount();
@@ -343,6 +351,15 @@ function init() {
   setupSearch();
   setupContactForm();
   setupNewsletterForm();
+
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener("click", () => {
+      alert("Thank you for your order! Your delicious chaat is on the way.");
+      cart = [];
+      updateCartCount();
+      renderCart();
+    });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", init);
