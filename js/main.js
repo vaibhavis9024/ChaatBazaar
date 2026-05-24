@@ -2,7 +2,21 @@ let menuItems = [];
 let currentCategory = "All";
 let orders = JSON.parse(localStorage.getItem('chaatOrders')) || [];
 
-// ===== Fetch Menu Data =====
+// Initialize cart from cart manager (will be set after DOM loads)
+let cart = [];
+
+// Will be initialized in setupCartManager() after document loads
+function setupCartManager() {
+  cart = cartManager.getItems();
+
+  // Subscribe to cart changes to keep cart variable in sync
+  cartManager.subscribe((items) => {
+    cart = [...items];
+  });
+
+  // Validate cart integrity
+  cartManager.validate();
+}
 async function loadMenuData() {
   try {
     const response = await fetch("data/menu.json");
@@ -25,11 +39,7 @@ const cartItemsContainer = document.getElementById("cart-items");
 const cartTotal = document.getElementById("cart-total") || document.getElementById("total-price");
 const checkoutBtn = document.getElementById("checkout-btn");
 
-let cart = JSON.parse(localStorage.getItem('chaatCart')) || [];
-
-function saveCart() {
-  localStorage.setItem('chaatCart', JSON.stringify(cart));
-}
+// Cart is managed by CartManager - initialized in main startup
 
 function formatPrice(price) {
   return `₹${price}`;
@@ -454,10 +464,9 @@ window.checkout = async function() {
   orders.unshift(newOrder);
   localStorage.setItem('chaatOrders', JSON.stringify(orders));
 
-  cart = [];
+  cartManager.clear();
   updateCartCount();
   renderCart();
-  saveCart();
 
   alert("Thank you for your order! Your hot street food is on the way. Redirecting to your Orders dashboard...");
   window.location.href = "orders.html";
@@ -468,20 +477,11 @@ window.reorderOrder = function(orderId) {
   if (!pastOrder) return;
 
   pastOrder.items.forEach(orderItem => {
-    const existingCartItem = cart.find(ci => ci.item.id === orderItem.item.id);
-    if (existingCartItem) {
-      existingCartItem.quantity += orderItem.quantity;
-    } else {
-      cart.push({
-        item: orderItem.item,
-        quantity: orderItem.quantity
-      });
-    }
+    cartManager.addItem(orderItem.item, orderItem.quantity);
   });
 
   updateCartCount();
   renderCart();
-  saveCart();
 
   alert("Items added back to your cart successfully!");
 
@@ -498,17 +498,10 @@ function addToCart(id) {
   const item = menuItems.find(i => i.id === id);
   if (!item) return;
 
-  const cartItem = cart.find(ci => ci.item.id === id);
-  if (cartItem) {
-    cartItem.quantity++;
-  } else {
-    cart.push({ item, quantity: 1 });
-  }
+  cartManager.addItem(item, 1);
   updateCartCount();
   renderCart();
-  saveCart();
 
-  // Slide open the cart sidebar automatically for a premium UX when adding items on index.html
   if (cartSidebar) {
     cartSidebar.setAttribute("aria-hidden", "false");
     cartSidebar.classList.add("open");
@@ -516,17 +509,16 @@ function addToCart(id) {
 }
 
 function removeFromCart(id) {
-  const cartIndex = cart.findIndex(ci => ci.item.id === id);
-  if (cartIndex === -1) return;
+  const cartItem = cartManager.getItem(id);
+  if (!cartItem) return;
 
-  if (cart[cartIndex].quantity > 1) {
-    cart[cartIndex].quantity--;
+  if (cartItem.quantity > 1) {
+    cartManager.decreaseQuantity(id);
   } else {
-    cart.splice(cartIndex, 1);
+    cartManager.removeItem(id);
   }
   updateCartCount();
   renderCart();
-  saveCart();
 }
 
 // ===== Event Listeners =====
@@ -879,6 +871,9 @@ function setupActiveNavbar() {
 // ===== Initialization =====
 
 async function init() {
+  // Initialize cart manager first to sync cart state
+  setupCartManager();
+
   // Bind interactive UI listeners immediately for instant input responsiveness (high INP)
   setupCartToggle();
   setupFilterButtons();

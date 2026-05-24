@@ -21,16 +21,15 @@
       <div class="dropdown" tabindex="0" aria-haspopup="true" aria-expanded="false">
         <a href="menu.html" class="dropdown-toggle nav-link active">Menu</a>
         <div class="dropdown-menu" role="menu" aria-label="Menu Categories">
-          <a href="#menu" role="menuitem" tabindex="-1" class="menu-filter" data-filter="Specials">Specials</a>
-          <a href="#menu" role="menuitem" tabindex="-1" class="menu-filter" data-filter="Snacks">Snacks</a>
-          <a href="#menu" role="menuitem" tabindex="-1" class="menu-filter" data-filter="Chaat">Chaat</a>
-          <a href="#menu" role="menuitem" tabindex="-1" class="menu-filter" data-filter="Beverages">Beverages</a>
-          <a href="#menu" role="menuitem" tabindex="-1" class="menu-filter" data-filter="All">All</a>
+          <a href="menu.html" role="menuitem" tabindex="-1" onclick="filterCategory('All')">All</a>
+          <a href="menu.html" role="menuitem" tabindex="-1" onclick="filterCategory('Snacks')">Snacks</a>
+          <a href="menu.html" role="menuitem" tabindex="-1" onclick="filterCategory('Chaat')">Chaat</a>
+          <a href="menu.html" role="menuitem" tabindex="-1" onclick="filterCategory('Beverages')">Beverages</a>
         </div>
       </div>
       <a href="index.html#about" class="nav-link">About</a>
       <a href="orders.html" class="nav-link">Orders</a>
-      <a href="#cart-sidebar" class="nav-link" id="cart-open-btn" aria-label="Open Cart">Cart (<span id="cart-count">0</span>)</a>
+      <a href="cart.html" class="nav-link">Cart</a>
       <div class="search-bar" role="search">
         <input type="search" placeholder="Search menu..." aria-label="Search menu" id="search-input" autocomplete="off" />
         <button aria-label="Search" id="search-btn"></button>
@@ -40,9 +39,8 @@
   </div>
 </header>
 
-<section class="menu" id="menu" role="region" aria-label="Full Menu">
-  <div class="container">
-    <h2 class="section-title">Our Menu</h2>
+<section class="menu-page container">
+  <h1>Our Menu</h1>
   <div class="filter-buttons" role="toolbar" aria-label="Filter menu categories">
     <button class="filter-btn active" data-filter="All" aria-pressed="true">All</button>
     <button class="filter-btn" data-filter="Snacks" aria-pressed="false">Snacks</button>
@@ -108,26 +106,10 @@
     </div>
   </div>
 
-  <div class="cards" id="menu-cards" aria-live="polite" aria-relevant="additions removals">
-    <!-- Menu cards injected here -->
-  </div>
+  <div class="menu-container" id="menu-container" aria-live="polite" aria-relevant="additions removals">
+    <!-- JS will dynamically load items -->
   </div>
 </section>
-
-<!-- Cart Sidebar -->
-<aside id="cart-sidebar" role="region" aria-label="Shopping Cart" aria-hidden="true">
-  <div id="cart-header">
-    Your Cart
-    <button id="cart-close" aria-label="Close Cart">&times;</button>
-  </div>
-  <div id="cart-items" tabindex="0" aria-live="polite" aria-relevant="additions removals">
-    <!-- Cart items injected here -->
-  </div>
-  <div id="cart-footer">
-    <span id="cart-total">Total: ₹0</span>
-    <button id="checkout-btn" disabled>Checkout</button>
-  </div>
-</aside>
 
 <footer>
   <div class="social-icons">
@@ -139,6 +121,8 @@
   <p>&copy; 2026 ChaatBazar. All rights reserved.</p>
 </footer>
 
+<script src="js/sanitization.js"></script>
+<script src="js/cart-manager.js"></script>
 <script src="js/geolocation.js"></script>
 <script src="js/main.js"></script>
 </body>
