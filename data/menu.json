@@ -1,7 +1,52 @@
 [
-  {"id":1,"name":"Samosa","category":"Snacks","price":15,"spice":"Medium","image":"../img/samosa.jpg"},
-  {"id":2,"name":"Kachori","category":"Snacks","price":20,"spice":"Medium","image":"../img/9.avif"},
-  {"id":3,"name":"Pani Puri","category":"Chaat","price":30,"spice":"High","image":"../img/panipuri.jpg"},
-  {"id":4,"name":"Sev Puri","category":"Chaat","price":35,"spice":"High","image":"../img/sevpuri.jpg"},
-  {"id":5,"name":"Chai","category":"Beverages","price":10,"spice":"Low","image":"../img/chai.jpg"}
+  {
+    "id": 1,
+    "name": "Samosa",
+    "category": "Snacks",
+    "price": 30,
+    "description": "Crispy golden triangle stuffed with spiced potatoes.",
+    "image": "img/8.avif",
+    "spice": "medium",
+    "isSpecial": true
+  },
+  {
+    "id": 2,
+    "name": "Pani Puri",
+    "category": "Chaat",
+    "price": 50,
+    "description": "Hollow crispy puris filled with spicy, tangy water and chickpeas.",
+    "image": "img/2.avif",
+    "spice": "high",
+    "isSpecial": true
+  },
+  {
+    "id": 3,
+    "name": "Masala Chai",
+    "category": "Beverages",
+    "price": 20,
+    "description": "Aromatic tea brewed with spices and milk.",
+    "image": "img/7.avif",
+    "spice": "low",
+    "isSpecial": true
+  },
+  {
+    "id": 4,
+    "name": "Kachori",
+    "category": "Snacks",
+    "price": 35,
+    "description": "Deep-fried pastry filled with spicy lentils.",
+    "image": "img/9.avif",
+    "spice": "medium",
+    "isSpecial": false
+  },
+  {
+    "id": 5,
+    "name": "Bhel Puri",
+    "category": "Chaat",
+    "price": 45,
+    "description": "Crunchy puffed rice mixed with tangy tamarind chutney.",
+    "image": "img/1.avif",
+    "spice": "low",
+    "isSpecial": false
+  }
 ]

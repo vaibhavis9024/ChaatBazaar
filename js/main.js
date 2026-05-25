@@ -1,45 +1,19 @@
-const menuItems = [
-  {
-    id: 1,
-    name: "Samosa",
-    category: "Snacks",
-    price: 30,
-    description: "Crispy golden triangle stuffed with spiced potatoes.",
-    image: "img/8.avif"
-  },
-  {
-    id: 2,
-    name: "Pani Puri",
-    category: "Chaat",
-    price: 50,
-    description: "Hollow crispy puris filled with spicy, tangy water and chickpeas.",
-    image: "img/2.avif"
-  },
-  {
-    id: 3,
-    name: "Masala Chai",
-    category: "Beverages",
-    price: 20,
-    description: "Aromatic tea brewed with spices and milk.",
-    image: "img/7.avif"
-  },
-  {
-    id: 4,
-    name: "Kachori",
-    category: "Snacks",
-    price: 35,
-    description: "Deep-fried pastry filled with spicy lentils.",
-    image: "img/9.avif"
-  },
-  {
-    id: 5,
-    name: "Bhel Puri",
-    category: "Chaat",
-    price: 45,
-    description: "Crunchy puffed rice mixed with tangy tamarind chutney.",
-    image: "img/1.avif"
-  },
-];
+let menuItems = []; 
+
+async function loadMenu() {
+  try {
+    const response = await fetch('data/menu.json');
+    if (!response.ok) throw new Error('Failed to load menu');
+    menuItems = await response.json();
+    
+    renderMenu('All');
+    renderSpecials();
+  } catch (err) {
+    console.error('Menu load error:', err);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadMenu);
 
 // ===== Globals =====
 const specialsContainer = document.getElementById("specials-cards");
@@ -88,7 +62,7 @@ function createCard(item) {
 }
 
 function renderSpecials() {
-  const specials = menuItems.slice(0, 3);
+  const specials = menuItems.filter(item => item.isSpecial);
 
   // 1. Show skeletons immediately
   showSkeletonCards(specialsContainer, specials.length);
