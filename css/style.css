@@ -309,6 +309,15 @@
       gap: 2rem;
       justify-content: center;
     }
+    .menu-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 2rem;
+      justify-content: center;
+      justify-items: center;
+      width: 100%;
+      margin-top: 2rem;
+    }
     .card {
       background: white;
       border-radius: 20px;
@@ -1618,6 +1627,7 @@ mark.highlight {
   box-shadow: 0 6px 20px rgba(191, 54, 12, 0.4);
   transform: translateY(-1px);
 }
+
 
 /* ===== Accessibility Styles ===== */
 
