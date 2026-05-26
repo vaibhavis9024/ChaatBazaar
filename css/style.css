@@ -231,6 +231,15 @@
       gap: 2rem;
       justify-content: center;
     }
+    .menu-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 2rem;
+      justify-content: center;
+      justify-items: center;
+      width: 100%;
+      margin-top: 2rem;
+    }
     .card {
       background: white;
       border-radius: 20px;
@@ -1713,6 +1722,7 @@ body.dark .skeleton {
     #3a3a3a 75%
   );
 }
+
 
 /* ===== Accessibility Styles ===== */
 

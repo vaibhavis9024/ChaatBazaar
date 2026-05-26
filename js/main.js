@@ -517,8 +517,12 @@ window.checkout = async function() {
   updateCartCount();
   renderCart();
 
-  alert("Thank you for your order! Your hot street food is on the way. Redirecting to your Orders dashboard...");
-  window.location.href = "orders.html";
+  // Launch the animation simulation modal if available.
+  if (typeof window.triggerDeliverySimulation === 'function') {
+    window.triggerDeliverySimulation();
+  } else {
+    console.warn('Delivery tracker is not ready yet. Order has been placed.');
+  }
 };
 
 window.reorderOrder = function(orderId) {

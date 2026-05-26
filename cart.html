@@ -6,6 +6,7 @@
   <title>Cart - ChaatBazar</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/delivery-tracker.css">
   <link rel="icon" href="favicon.png" type="image/png" />
 </head>
 <body>
@@ -30,7 +31,7 @@
   </div>
   <div id="cart-items"></div>
   <p id="total-price"></p>
-  <button onclick="checkout()">Checkout</button>
+  <button id="checkout-btn">Checkout</button>
 </section>
 
 <footer>
@@ -43,8 +44,36 @@
   <p>&copy; 2026 ChaatBazar. All rights reserved.</p>
 </footer>
 
+<div id="delivery-modal" class="delivery-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="delivery-modal-title" aria-hidden="true">
+    <div class="delivery-modal-content" tabindex="-1">
+        <h3 id="delivery-modal-title">Tracking Your Chaat...</h3>
+        
+        <div class="animation-container">
+            <div class="road-line"></div>
+            <div id="vendor-cart" class="vendor-cart" aria-hidden="true">🚲🛒</div>
+        </div>
+
+        <div class="progress-track-wrapper">
+            <div class="progress-bar-bg">
+                <div id="active-progress-bar" class="progress-bar-fill"></div>
+            </div>
+            <div class="progress-steps">
+                <div class="step active" data-step="0"><span class="icon">🍳</span><span class="label">Preparing</span></div>
+                <div class="step" data-step="1"><span class="icon">📦</span><span class="label">Packed</span></div>
+                <div class="step" data-step="2"><span class="icon">🚲</span><span class="label">Out for Delivery</span></div>
+                <div class="step" data-step="3"><span class="icon">✅</span><span class="label">Delivered</span></div>
+            </div>
+        </div>
+
+        <p id="live-status-text" class="status-text" aria-live="polite" aria-atomic="true">Your order is being prepared with love... 🍳</p>
+        
+        <button id="close-delivery-modal" class="btn-close-modal hidden" type="button">View Order Status</button>
+    </div>
+</div>
+
 <script src="js/accessibility.js"></script>
 <script src="js/geolocation.js"></script>
 <script src="js/main.js"></script>
+<script src="js/delivery-tracker.js"></script>
 </body>
 </html>
